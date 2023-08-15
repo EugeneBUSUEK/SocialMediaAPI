@@ -6,25 +6,24 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.List;
-
 @Builder
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tblUser")
-public class UserEntity {
+@Table(name = "tblPost")
+public class PostEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String login;
+    private String title;
 
-    private String email;
+    private String text;
 
-    private String password;
+    private String photoLink;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.PERSIST, mappedBy = "user")
-    private List<PostEntity> posts;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 }
