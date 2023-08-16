@@ -11,3 +11,8 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 jwt:
   secret_key: ${JWT_SECRET_KEY}
+springdoc:
+  api-docs:
+    path: /api/v1/docs
+  swagger-ui:
+    path: /api/v1/docs/
