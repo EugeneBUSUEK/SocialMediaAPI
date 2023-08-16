@@ -9,3 +9,5 @@ spring:
       ddl-auto: create-drop
     defer-datasource-initialization: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+jwt:
+  secret_key: ${JWT_SECRET_KEY}

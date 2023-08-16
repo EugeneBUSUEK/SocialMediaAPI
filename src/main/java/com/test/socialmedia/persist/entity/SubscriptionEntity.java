@@ -3,9 +3,11 @@ package com.test.socialmedia.persist.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+@Data
 @Builder
 @Accessors(chain = true)
 @NoArgsConstructor
@@ -13,7 +15,7 @@ import lombok.experimental.Accessors;
 @Entity
 @Table(name = "tblSubscription",
         uniqueConstraints = {
-                @UniqueConstraint(name = "UniqueUserFromAndUserTo", columnNames = { "user_from", "user_to" })
+                @UniqueConstraint(name = "UniqueUserFromAndUserTo", columnNames = {"user_from", "user_to"})
         })
 public class SubscriptionEntity {
     @Id
