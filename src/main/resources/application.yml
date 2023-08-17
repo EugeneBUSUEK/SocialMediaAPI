@@ -16,3 +16,13 @@ springdoc:
     path: /api/v1/docs
   swagger-ui:
     path: /api/v1/docs/
+logging:
+  level:
+    sql: debug
+    web: trace
+    root: trace
+  file:
+    name: main.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
