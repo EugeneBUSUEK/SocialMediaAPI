@@ -1,13 +1,16 @@
 package com.test.socialmedia.api.controller;
 
-import com.jlefebure.spring.boot.minio.MinioException;
-import com.jlefebure.spring.boot.minio.MinioService;
+import com.test.socialmedia.service.FileService;
+import com.test.socialmedia.service.MinioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,31 +25,25 @@ import java.nio.file.Path;
 @Tag(name = "Files", description = "Files resources")
 public class FileController {
 
-//    private final MinioService minioService;
-//
-//    @Operation(summary = "download file")
-//    @GetMapping("/{object}")
-//    public void getObject(@PathVariable("object") String object, HttpServletResponse response) throws MinioException, IOException {
-//        InputStream inputStream = minioService.get(Path.of(object));
-//        InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
-//
-//        response.addHeader("Content-disposition", "attachment;filename=" + object);
-//        response.setContentType(URLConnection.guessContentTypeFromName(object));
-//
-//        IOUtils.copy(inputStream, response.getOutputStream());
-//        response.flushBuffer();
-//    }
-//
-//    @Operation(summary = "upload file")
-//    @PostMapping
-//    public void addAttachment(@RequestParam("file") MultipartFile file) {
-//        Path path = Path.of(file.getOriginalFilename());
-//        try {
-//            minioService.upload(path, file.getInputStream(), file.getContentType());
-//        } catch (MinioException e) {
-//            throw new IllegalStateException("The file cannot be upload on the internal storage. Please retry later", e);
-//        } catch (IOException e) {
-//            throw new IllegalStateException("The file cannot be read", e);
-//        }
-//    }
+    private final FileService fileService;
+
+    @Operation(summary = "download file")
+    @GetMapping("/{object}")
+    public void getObject(@PathVariable("object") String object, HttpServletResponse response) throws IOException {
+        InputStream inputStream = fileService.getAttachment(object);
+        InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+
+        response.addHeader("Content-disposition", "inline;filename=" + object);
+        response.setContentType(URLConnection.guessContentTypeFromName(object));
+
+        IOUtils.copy(inputStream, response.getOutputStream());
+        response.flushBuffer();
+    }
+
+    @Operation(summary = "upload file")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> addAttachment(@RequestParam("file") MultipartFile file) {
+        String responseBody = fileService.addAttachment(file);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
 }
