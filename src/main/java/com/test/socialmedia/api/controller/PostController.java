@@ -1,7 +1,12 @@
 package com.test.socialmedia.api.controller;
 
+import com.test.socialmedia.model.request.PostRequest;
+import com.test.socialmedia.model.response.PageableResponse;
+import com.test.socialmedia.model.response.PostResponse;
+import com.test.socialmedia.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,14 +39,16 @@ public class PostController {
 
     @Operation(summary = "update user post")
     @PutMapping(
+            value = "/{postId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<PostResponse> updatePost(
+            @PathVariable(name = "postId") Long postId,
             @RequestBody PostRequest postRequest,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        PostResponse postResponse = postService.updateUserPost(postRequest, userDetails);
+        PostResponse postResponse = postService.updateUserPost(postId, postRequest, userDetails);
 
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
@@ -61,13 +68,13 @@ public class PostController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<PageableResponse> getPosts(
+    public ResponseEntity<PageableResponse<PostResponse>> getPosts(
             @RequestParam(name = "date_sort") String dateSort,
             @RequestParam(name = "page") Integer pageNumber,
             @RequestParam(name = "size") Integer pageSize,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        PageableResponse response = postService.getUserPosts(userDetails, dateSort, pageNumber, pageSize);
+        PageableResponse<PostResponse> response = postService.getUserPosts(userDetails, dateSort, pageNumber, pageSize);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

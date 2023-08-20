@@ -28,4 +28,6 @@ public class PostEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    private Long createdWhen = System.currentTimeMillis();
 }

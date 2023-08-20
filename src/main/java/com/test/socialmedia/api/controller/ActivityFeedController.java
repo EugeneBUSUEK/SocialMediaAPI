@@ -19,20 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Feed", description = "Feed's resources")
 public class ActivityFeedController {
 
-    private final FeedService feedService;
-
-    @Operation(summary = "get user activity feed")
-    @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<PageableResponse> getPosts(
-            @RequestParam(name = "date_sort") String dateSort,
-            @RequestParam(name = "page") Integer pageNumber,
-            @RequestParam(name = "size") Integer pageSize,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
-        PageableResponse response = feedService.getUserFeed(userDetails, dateSort, pageNumber, pageSize);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+//    private final FeedService feedService;
+//
+//    @Operation(summary = "get user activity feed")
+//    @GetMapping(
+//            produces = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    public ResponseEntity<PageableResponse> getPosts(
+//            @RequestParam(name = "date_sort") String dateSort,
+//            @RequestParam(name = "page") Integer pageNumber,
+//            @RequestParam(name = "size") Integer pageSize,
+//            @AuthenticationPrincipal UserDetails userDetails
+//    ) {
+//        PageableResponse response = feedService.getUserFeed(userDetails, dateSort, pageNumber, pageSize);
+//
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
 }
