@@ -1,7 +1,9 @@
 package com.test.socialmedia.persist.service;
 
+import com.test.socialmedia.exception.InvalidDirectionFormat;
 import com.test.socialmedia.persist.PostRepository;
 import com.test.socialmedia.persist.entity.PostEntity;
+import com.test.socialmedia.support.constraint.ErrorMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,12 +19,12 @@ public class DBPostService {
 
     private final PostRepository postRepository;
 
-    public Page<PostEntity> getUsersPosts(Collection<Long> userIds, String dateSort, Integer pageNumber, Integer pageSize) {
+    public Page<PostEntity> getUsersPostsByUserIds(Collection<Long> userIds, String dateSort, Integer pageNumber, Integer pageSize) {
         Sort.Direction direction;
         try {
             direction = Sort.Direction.fromString(dateSort);
         } catch (Exception e) {
-            throw new RuntimeException("Invalid direction (ASC/DESC)"); //TODO exception
+            throw new InvalidDirectionFormat(ErrorMessages.INVALID_DIRECTION_FORMAT);
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize, direction, "createdWhen");
         return postRepository.findByUserIdIn(userIds, pageable);

@@ -36,7 +36,7 @@ public class FeedService {
                         null,
                         DBSubscriptionService.Side.LEFT
                 );
-        Page<PostEntity> page = dbPostService.getUsersPosts(
+        Page<PostEntity> page = dbPostService.getUsersPostsByUserIds(
                 users.stream().map(UserEntity::getId).toList(),
                 dateSort,
                 pageNumber,

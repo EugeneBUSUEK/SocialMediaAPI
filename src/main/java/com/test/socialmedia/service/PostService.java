@@ -1,5 +1,7 @@
 package com.test.socialmedia.service;
 
+import com.test.socialmedia.exception.InaccessibleOperationException;
+import com.test.socialmedia.exception.NotFoundException;
 import com.test.socialmedia.model.request.PostRequest;
 import com.test.socialmedia.model.response.PageableResponse;
 import com.test.socialmedia.model.response.PostResponse;
@@ -7,20 +9,22 @@ import com.test.socialmedia.model.response.UserPostResponse;
 import com.test.socialmedia.persist.PostRepository;
 import com.test.socialmedia.persist.entity.PostEntity;
 import com.test.socialmedia.persist.entity.UserEntity;
+import com.test.socialmedia.persist.service.DBPostService;
 import com.test.socialmedia.persist.service.DBUserService;
+import com.test.socialmedia.support.constraint.ErrorMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+    private final DBPostService dbPostService;
     private final DBUserService dbUserService;
 
 
@@ -49,11 +53,11 @@ public class PostService {
 
     public PostResponse updateUserPost(Long postId, PostRequest postRequest, UserDetails userDetails) {
         PostEntity postEntity = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post with id= " + postId + " not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.POST_BY_ID_NOT_FUND, postId));
         UserEntity author = dbUserService.getUserByLogin(userDetails.getUsername());
 
         if (!author.getId().equals(postEntity.getUser().getId())) {
-            throw new RuntimeException("Inaccessible operation"); //TODO exception
+            throw new InaccessibleOperationException(ErrorMessages.INACCESSIBLE_OPERATION);
         }
 
         postEntity.setText(postRequest.getText() != null ? postRequest.getText() : postEntity.getText())
@@ -79,26 +83,19 @@ public class PostService {
 
     public void deleteUserPost(Long postId, UserDetails userDetails) {
         PostEntity postEntity = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post with id= " + postId + " not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.POST_BY_ID_NOT_FUND, postId));
         UserEntity author = dbUserService.getUserByLogin(userDetails.getUsername());
 
         if (!author.getId().equals(postEntity.getUser().getId())) {
-            throw new RuntimeException("Inaccessible operation"); //TODO exception
+            throw new InaccessibleOperationException(ErrorMessages.INACCESSIBLE_OPERATION);
         }
 
         postRepository.delete(postEntity);
     }
 
     public PageableResponse<PostResponse> getUserPosts(UserDetails userDetails, String dateSort, Integer pageNumber, Integer pageSize) {
-        Sort.Direction direction;
-        try {
-            direction = Sort.Direction.fromString(dateSort);
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid direction (ASC/DESC)");
-        }
         UserEntity user = dbUserService.getUserByLogin(userDetails.getUsername());
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, direction, "createdWhen");
-        Page<PostEntity> page = postRepository.findByUserIdIs(user.getId(), pageable);
+        Page<PostEntity> page = dbPostService.getUsersPostsByUserIds(List.of(user.getId()), dateSort, pageNumber, pageSize);
 
         return new PageableResponse<PostResponse>()
                 .setContent(page.get().map(postEntity -> {

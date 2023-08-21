@@ -1,5 +1,7 @@
 package com.test.socialmedia.service;
 
+import com.test.socialmedia.exception.FileException;
+import com.test.socialmedia.support.constraint.ErrorMessages;
 import com.test.socialmedia.support.util.FileUtil;
 import io.minio.*;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +25,11 @@ public class MinioService {
         try {
             createBucket();
         } catch (Exception e) {
-            throw new RuntimeException("Image upload failed" + e.getMessage()); //TODO Exception
+            throw new FileException(ErrorMessages.FILE_UPLOAD_FAILED);
         }
 
         if (file.isEmpty() || file.getOriginalFilename() == null) {
-            throw new RuntimeException("File is empty"); //TODO Exception
+            throw new FileException(ErrorMessages.FILE_IS_EMPTY);
         }
 
         String fileName = FileUtil.generateFileName(file);
@@ -36,7 +38,7 @@ public class MinioService {
         try {
             inputStream = file.getInputStream();
         } catch (Exception e) {
-            throw new RuntimeException("Image upload failed" + e.getMessage()); //TODO Exception
+            throw new FileException(ErrorMessages.FILE_UPLOAD_FAILED);
         }
 
         saveFile(inputStream, fileName);
