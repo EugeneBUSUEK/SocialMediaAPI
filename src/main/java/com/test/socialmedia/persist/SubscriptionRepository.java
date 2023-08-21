@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface SubscriptionRepository extends JpaRepository<SubscriptionEntity, Long> {
     @Query(value = """
-            select s.* from tbl_subscription s where s.is_approved = :isApproved and (s.user_from = :userId or s.user_to = :userId)
+            select s.* from tbl_subscription s where s.is_approved = coalesce(:isApproved, s.is_approved) and (s.user_from = :userId or s.user_to = :userId)
             """,
             nativeQuery = true)
     List<SubscriptionEntity> findSubscriptionEntitiesByUserFromOrUserToEqualsAndIsApprovedIs(Long userId, Boolean isApproved);
