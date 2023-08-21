@@ -1,6 +1,5 @@
 package com.test.socialmedia.service;
 
-import com.test.socialmedia.model.response.PageableResponse;
 import com.test.socialmedia.model.response.UserResponse;
 import com.test.socialmedia.persist.SubscriptionRepository;
 import com.test.socialmedia.persist.entity.SubscriptionEntity;
@@ -54,13 +53,13 @@ public class SubscriptionService {
             throw new RuntimeException("No subscription between user with id=" + user.getId() +
                     " and user with id=" + userId + " not found");
         }
-        SubscriptionEntity subscription =subscriptionOpt.get();
+        SubscriptionEntity subscription = subscriptionOpt.get();
 
         if (subscription.getIsApproved().equals(true)) {
             if (subscription.getUserFrom().getId().equals(user.getId())) {
                 subscription.setUserFrom(UserEntity.builder()
-                        .id(userId)
-                        .build())
+                                .id(userId)
+                                .build())
                         .setUserTo(user)
                         .setIsApproved(false);
             } else if (subscription.getUserTo().getId().equals(user.getId())) {

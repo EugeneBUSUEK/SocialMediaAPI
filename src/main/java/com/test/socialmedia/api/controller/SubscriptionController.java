@@ -1,6 +1,5 @@
 package com.test.socialmedia.api.controller;
 
-import com.test.socialmedia.model.response.PageableResponse;
 import com.test.socialmedia.model.response.UserResponse;
 import com.test.socialmedia.service.SubscriptionService;
 import io.swagger.v3.oas.annotations.Operation;

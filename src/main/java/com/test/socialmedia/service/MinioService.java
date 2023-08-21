@@ -47,12 +47,12 @@ public class MinioService {
     @SneakyThrows
     private void createBucket() {
         boolean found = minioClient.bucketExists(BucketExistsArgs.builder()
-                        .bucket(this.bucket)
+                .bucket(this.bucket)
                 .build());
 
         if (!found) {
             minioClient.makeBucket(MakeBucketArgs.builder()
-                            .bucket(this.bucket)
+                    .bucket(this.bucket)
                     .build());
         }
     }
@@ -60,17 +60,17 @@ public class MinioService {
     @SneakyThrows
     private void saveFile(InputStream inputStream, String fileName) {
         minioClient.putObject(PutObjectArgs.builder()
-                        .stream(inputStream, inputStream.available(), -1)
-                        .bucket(this.bucket)
-                        .object(fileName)
+                .stream(inputStream, inputStream.available(), -1)
+                .bucket(this.bucket)
+                .object(fileName)
                 .build());
     }
 
     @SneakyThrows
     public InputStream getFile(String object) {
         InputStream inputStream = minioClient.getObject(GetObjectArgs.builder()
-                        .bucket(this.bucket)
-                        .object(object)
+                .bucket(this.bucket)
+                .object(object)
                 .build());
 
         return inputStream;
