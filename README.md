@@ -3,7 +3,7 @@
 ## Contents
 
 * [Run in Docker](#run-in-docker)
-* [API Documentation](#api-overview)
+* [API Documentation](#api-documentation)
 
 ## Run in Docker
 
