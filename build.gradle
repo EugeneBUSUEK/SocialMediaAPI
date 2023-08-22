@@ -41,8 +41,6 @@ dependencies {
 	//Other libs
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	//Deployment
-//	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
